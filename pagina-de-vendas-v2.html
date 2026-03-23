@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Método IA Income — A Janela que está se abrindo agora</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #06060a;
+  --surface: #0e0e16;
+  --surface2: #14141f;
+  --border: #1c1c2e;
+  --accent: #00e5ff;
+  --accent2: #7c3aed;
+  --accent3: #f59e0b;
+  --green: #10b981;
+  --red: #ef4444;
+  --text: #d4d4f0;
+  --muted: #5a5a8a;
+  --white: #fff;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Instrument Sans', sans-serif;
+  font-size:16px;
+  line-height:1.7;
+  overflow-x:hidden;
+}
+
+/* GRID LINES BG */
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image:
+    linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* TOPBAR */
+.topbar {
+  position:sticky; top:0; z-index:100;
+  background: rgba(6,6,10,0.9);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+  display:flex; align-items:center; justify-content:center; gap:16px;
+  flex-wrap:wrap;
+}
+
+.topbar-dot {
+  width:8px; height:8px;
+  border-radius:50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: pulse 2s infinite;
+  flex-shrink:0;
+}
+
+@keyframes pulse {
+  0%,100%{ opacity:1; transform:scale(1); }
+  50%{ opacity:0.6; transform:scale(1.3); }
+}
+
+.topbar-text {
+  font-size:13px; font-weight:600; color:var(--white);
+}
+
+.topbar-cta {
+  background: var(--accent);
+  color:#000;
+  font-weight:700; font-size:12px;
+  padding:6px 16px; border-radius:99px;
+  cursor:pointer; border:none;
+  text-decoration:none;
+  white-space:nowrap;
+}
+
+/* HERO */
+.hero {
+  position:relative;
+  min-height:100vh;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  padding: 100px 20px 80px;
+  text-align:center;
+  z-index:1;
+  overflow:hidden;
+}
+
+/* Orb glow */
+.hero::before {
+  content:'';
+  position:absolute;
+  width:800px; height:800px;
+  background: radial-gradient(ellipse, rgba(124,58,237,0.2) 0%, transparent 70%);
+  top:50%; left:50%;
+  transform:translate(-50%,-60%);
+  pointer-events:none;
+}
+.hero::after {
+  content:'';
+  position:absolute;
+  width:600px; height:600px;
+  background: radial-gradient(ellipse, rgba(0,229,255,0.12) 0%, transparent 70%);
+  top:50%; left:50%;
+  transform:translate(-50%,-30%);
+  pointer-events:none;
+}
+
+.hero-eyebrow {
+  display:inline-flex; align-items:center; gap:8px;
+  background: rgba(0,229,255,0.08);
+  border:1px solid rgba(0,229,255,0.25);
+  border-radius:99px;
+  padding:6px 16px;
+  font-size:12px; font-weight:700;
+  letter-spacing:2px; text-transform:uppercase;
+  color:var(--accent);
+  margin-bottom:32px;
+  animation: fadeUp 0.6s ease both;
+}
+
+.hero-eyebrow::before {
+  content:''; width:6px; height:6px; border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 6px var(--accent);
+  animation:pulse 2s infinite;
+}
+
+.hero h1 {
+  font-family:'Bebas Neue', sans-serif;
+  font-size: clamp(52px,9vw,120px);
+  line-height:0.9;
+  color:var(--white);
+  max-width:1000px;
+  animation: fadeUp 0.7s 0.1s ease both;
+  opacity:0;
+}
+
+.hero h1 .line-accent {
+  display:block;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+.hero h1 .line-dim {
+  display:block;
+  color:var(--muted);
+  font-size:0.55em;
+  letter-spacing:2px;
+  -webkit-text-fill-color: var(--muted);
+}
+
+.hero-sub {
+  margin-top:28px;
+  font-size:clamp(16px,2.2vw,20px);
+  color:var(--muted);
+  max-width:620px;
+  animation: fadeUp 0.7s 0.2s ease both;
+  opacity:0;
+}
+
+.hero-sub strong { color:var(--text); }
+
+/* Stats strip */
+.hero-stats {
+  display:flex; gap:32px; flex-wrap:wrap; justify-content:center;
+  margin-top:40px;
+  animation: fadeUp 0.7s 0.3s ease both;
+  opacity:0;
+}
+
+.hero-stat {
+  text-align:center;
+}
+
+.hero-stat-num {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:32px; color:var(--accent);
+  line-height:1;
+}
+
+.hero-stat-label {
+  font-size:11px; color:var(--muted);
+  text-transform:uppercase; letter-spacing:1.5px;
+  margin-top:4px;
+}
+
+.hero-cta-wrap {
+  margin-top:48px;
+  animation: fadeUp 0.7s 0.4s ease both;
+  opacity:0;
+}
+
+.btn-hero {
+  display:inline-block;
+  background: linear-gradient(135deg, var(--accent2), #4f46e5);
+  color:#fff;
+  font-weight:700; font-size:18px;
+  padding:20px 52px;
+  border-radius:8px;
+  text-decoration:none;
+  position:relative;
+  overflow:hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow:0 0 60px rgba(124,58,237,0.4);
+}
+
+.btn-hero::before {
+  content:'';
+  position:absolute; inset:0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+}
+
+.btn-hero:hover {
+  transform:translateY(-3px);
+  box-shadow:0 0 80px rgba(124,58,237,0.6);
+}
+
+.btn-sub {
+  display:block; margin-top:14px;
+  font-size:13px; color:var(--muted);
+}
+
+@keyframes fadeUp {
+  from{ opacity:0; transform:translateY(28px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+
+/* TICKER */
+.ticker-wrap {
+  overflow:hidden;
+  background: var(--surface);
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  padding:12px 0;
+  z-index:1; position:relative;
+}
+
+.ticker {
+  display:flex; gap:60px;
+  width:max-content;
+  animation: ticker 30s linear infinite;
+}
+
+@keyframes ticker {
+  from{ transform:translateX(0); }
+  to{ transform:translateX(-50%); }
+}
+
+.ticker-item {
+  display:flex; align-items:center; gap:10px;
+  font-size:13px; font-weight:600;
+  color:var(--muted);
+  white-space:nowrap;
+}
+
+.ticker-item .t-tag {
+  background: rgba(0,229,255,0.1);
+  border:1px solid rgba(0,229,255,0.2);
+  color:var(--accent);
+  font-size:10px; font-weight:700;
+  padding:2px 8px; border-radius:4px;
+  letter-spacing:1px;
+}
+
+/* SECTIONS */
+section {
+  position:relative; z-index:1;
+  padding:80px 20px;
+  max-width:900px;
+  margin:0 auto;
+}
+
+.s-tag {
+  display:inline-block;
+  font-size:11px; font-weight:700;
+  letter-spacing:3px; text-transform:uppercase;
+  color:var(--accent); margin-bottom:16px;
+  border-left:2px solid var(--accent);
+  padding-left:10px;
+}
+
+h2 {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(36px,5.5vw,68px);
+  line-height:0.95;
+  color:var(--white);
+  margin-bottom:20px;
+}
+
+h2 .g {
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+p { color:var(--muted); margin-bottom:16px; line-height:1.8; }
+p strong { color:var(--text); }
+
+/* WINDOW SECTION */
+.window-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:3px;
+  margin-top:40px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  overflow:hidden;
+}
+
+.window-cell {
+  background:var(--surface);
+  padding:28px 24px;
+}
+
+.window-cell.highlight {
+  background: rgba(0,229,255,0.05);
+  border:1px solid rgba(0,229,255,0.15);
+  border-radius:0;
+}
+
+.window-cell .wc-label {
+  font-size:11px; font-weight:700; letter-spacing:2px;
+  text-transform:uppercase; margin-bottom:10px;
+}
+
+.window-cell .wc-label.red { color:var(--red); }
+.window-cell .wc-label.green { color:var(--green); }
+
+.window-cell h3 {
+  font-size:20px; font-weight:700;
+  color:var(--white); margin-bottom:8px;
+}
+
+.window-cell p { font-size:14px; margin:0; }
+
+/* OPPORTUNITY CARDS */
+.opp-grid {
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
+  gap:2px;
+  margin-top:40px;
+}
+
+.opp-card {
+  background:var(--surface);
+  padding:32px 28px;
+  position:relative;
+  overflow:hidden;
+  transition:background 0.3s;
+  cursor:default;
+}
+
+.opp-card::before {
+  content:'';
+  position:absolute;
+  top:0; left:0; right:0;
+  height:2px;
+  opacity:0;
+  transition:opacity 0.3s;
+}
+
+.opp-card.c1::before { background: linear-gradient(90deg,var(--accent),transparent); }
+.opp-card.c2::before { background: linear-gradient(90deg,var(--accent2),transparent); }
+.opp-card.c3::before { background: linear-gradient(90deg,var(--accent3),transparent); }
+.opp-card.c4::before { background: linear-gradient(90deg,var(--green),transparent); }
+
+.opp-card:hover { background:var(--surface2); }
+.opp-card:hover::before { opacity:1; }
+
+.opp-icon { font-size:36px; margin-bottom:16px; display:block; }
+
+.opp-tag {
+  font-size:10px; font-weight:700; letter-spacing:2px;
+  text-transform:uppercase; margin-bottom:10px;
+  display:block;
+}
+
+.opp-card.c1 .opp-tag { color:var(--accent); }
+.opp-card.c2 .opp-tag { color:var(--accent2); }
+.opp-card.c3 .opp-tag { color:var(--accent3); }
+.opp-card.c4 .opp-tag { color:var(--green); }
+
+.opp-card h3 {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:26px; color:var(--white);
+  margin-bottom:10px; line-height:1;
+}
+
+.opp-card p { font-size:14px; margin-bottom:14px; }
+
+.opp-potential {
+  display:inline-block;
+  background:rgba(255,255,255,0.05);
+  border:1px solid var(--border);
+  border-radius:6px;
+  padding:6px 12px;
+  font-size:12px; font-weight:700;
+  color:var(--text);
+}
+
+/* PAIN */
+.pain-list {
+  list-style:none;
+  display:flex; flex-direction:column; gap:12px;
+  margin-top:32px;
+}
+
+.pain-list li {
+  display:flex; gap:14px; align-items:flex-start;
+  background:rgba(239,68,68,0.05);
+  border:1px solid rgba(239,68,68,0.15);
+  border-radius:8px;
+  padding:16px 20px;
+  font-size:15px; color:var(--text);
+}
+
+.pain-list li .px { color:var(--red); font-weight:800; font-size:16px; flex-shrink:0; }
+
+/* MODULE PREVIEW */
+.modules-list {
+  margin-top:36px;
+  display:flex; flex-direction:column; gap:3px;
+}
+
+.mod-item {
+  background:var(--surface);
+  border-radius:0;
+  display:grid;
+  grid-template-columns:60px 1fr auto;
+  align-items:center;
+  gap:20px;
+  padding:20px 24px;
+  cursor:pointer;
+  transition:background 0.2s;
+  border-left:3px solid transparent;
+}
+
+.mod-item:first-child { border-radius:10px 10px 0 0; }
+.mod-item:last-child { border-radius:0 0 10px 10px; }
+
+.mod-item:hover {
+  background:var(--surface2);
+  border-left-color:var(--accent);
+}
+
+.mod-num {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:13px; color:var(--accent);
+  letter-spacing:2px;
+}
+
+.mod-title { font-size:15px; font-weight:600; color:var(--white); }
+.mod-desc { font-size:13px; color:var(--muted); margin-top:3px; }
+
+.mod-arrow { color:var(--muted); font-size:18px; }
+
+/* TESTIMONIALS */
+.testi-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:2px;
+  margin-top:36px;
+}
+
+.testi {
+  background:var(--surface);
+  padding:28px;
+}
+
+.testi:first-child { border-radius:10px 0 0 0; }
+.testi:nth-child(2) { border-radius:0 10px 0 0; }
+.testi:nth-child(3) { border-radius:0 0 0 10px; }
+.testi:last-child { border-radius:0 0 10px 0; }
+
+.testi-stars { color:var(--accent3); font-size:14px; margin-bottom:14px; }
+.testi-text { font-size:14px; color:var(--text); line-height:1.7; margin-bottom:18px; }
+.testi-author { display:flex; align-items:center; gap:12px; }
+
+.testi-av {
+  width:40px; height:40px; border-radius:50%;
+  background: linear-gradient(135deg,var(--accent2),var(--accent));
+  display:flex; align-items:center; justify-content:center;
+  font-weight:800; color:#fff; font-size:13px;
+  flex-shrink:0;
+}
+
+.testi-name { font-size:13px; font-weight:700; color:var(--white); }
+.testi-role { font-size:12px; color:var(--muted); }
+
+/* GUARANTEE */
+.guar-box {
+  background:var(--surface);
+  border:1px solid rgba(16,185,129,0.3);
+  border-radius:12px;
+  padding:44px 40px;
+  text-align:center;
+  margin-top:36px;
+  position:relative;
+  overflow:hidden;
+}
+
+.guar-box::before {
+  content:'';
+  position:absolute;
+  width:300px; height:300px;
+  background:radial-gradient(circle,rgba(16,185,129,0.08),transparent 70%);
+  top:50%; left:50%; transform:translate(-50%,-50%);
+  pointer-events:none;
+}
+
+.guar-icon { font-size:60px; margin-bottom:16px; display:block; }
+
+.guar-box h3 {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:40px; color:var(--white); margin-bottom:12px;
+}
+
+.guar-box p { max-width:500px; margin:0 auto; font-size:15px; }
+
+/* OFFER */
+.offer-box {
+  background:var(--surface);
+  border-radius:16px;
+  padding:52px 44px;
+  text-align:center;
+  margin-top:36px;
+  position:relative;
+  overflow:hidden;
+}
+
+.offer-box::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));
+}
+
+.offer-badge {
+  display:inline-block;
+  background:rgba(239,68,68,0.1);
+  border:1px solid rgba(239,68,68,0.3);
+  color:var(--red);
+  font-size:12px; font-weight:700; letter-spacing:1.5px;
+  padding:5px 14px; border-radius:99px;
+  text-transform:uppercase;
+  margin-bottom:20px;
+}
+
+.offer-original {
+  font-size:18px; color:var(--muted);
+  text-decoration:line-through;
+  margin-bottom:8px;
+}
+
+.offer-price {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:90px; line-height:1;
+  background: linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+.offer-price sup { font-size:36px; vertical-align:super; }
+.offer-price sub { font-size:32px; }
+
+.offer-installment {
+  font-size:15px; color:var(--muted); margin-top:8px;
+}
+
+.offer-installment strong { color:var(--text); }
+
+.offer-includes {
+  list-style:none;
+  text-align:left;
+  margin:36px 0;
+  display:flex; flex-direction:column; gap:10px;
+  max-width:520px;
+  margin-left:auto; margin-right:auto;
+}
+
+.offer-includes li {
+  display:flex; align-items:flex-start; gap:12px;
+  font-size:14px; color:var(--text);
+}
+
+.offer-includes li::before {
+  content:'✓';
+  width:22px; height:22px;
+  background:rgba(16,185,129,0.1);
+  border:1px solid rgba(16,185,129,0.3);
+  border-radius:50%;
+  color:var(--green); font-weight:800; font-size:12px;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; margin-top:1px;
+}
+
+.btn-offer {
+  display:block;
+  background:linear-gradient(135deg,var(--accent2),#4f46e5);
+  color:#fff;
+  font-weight:800; font-size:20px;
+  padding:22px 48px;
+  border-radius:8px;
+  text-decoration:none;
+  border:none; cursor:pointer;
+  transition:transform 0.2s, box-shadow 0.2s;
+  box-shadow:0 0 60px rgba(124,58,237,0.4);
+  position:relative; overflow:hidden;
+}
+
+.btn-offer::before {
+  content:'';
+  position:absolute; inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,0.1),transparent);
+}
+
+.btn-offer:hover {
+  transform:translateY(-2px);
+  box-shadow:0 0 80px rgba(124,58,237,0.6);
+}
+
+.offer-secure {
+  margin-top:16px; font-size:12px; color:var(--muted);
+}
+
+/* FAQ */
+.faq { display:flex; flex-direction:column; gap:3px; margin-top:36px; }
+
+.faq-item {
+  background:var(--surface);
+  border-radius:0; overflow:hidden;
+}
+
+.faq-item:first-child { border-radius:10px 10px 0 0; }
+.faq-item:last-child { border-radius:0 0 10px 10px; }
+
+.faq-q {
+  padding:20px 24px;
+  font-size:15px; font-weight:600;
+  color:var(--white);
+  cursor:pointer;
+  display:flex; justify-content:space-between; align-items:center; gap:12px;
+  user-select:none;
+  transition:background 0.2s;
+}
+
+.faq-q:hover { background:var(--surface2); }
+
+.faq-arrow { color:var(--muted); transition:transform 0.3s; font-size:18px; flex-shrink:0; }
+.faq-item.open .faq-arrow { transform:rotate(180deg); color:var(--accent); }
+
+.faq-a { max-height:0; overflow:hidden; transition:max-height 0.4s ease; }
+.faq-item.open .faq-a { max-height:400px; }
+
+.faq-a-inner {
+  padding:0 24px 20px;
+  font-size:14px; color:var(--muted);
+  border-top:1px solid var(--border);
+  padding-top:16px; line-height:1.8;
+}
+
+/* FOOTER */
+footer {
+  text-align:center;
+  padding:48px 20px;
+  border-top:1px solid var(--border);
+  font-size:12px; color:var(--muted);
+  line-height:2.2;
+  z-index:1; position:relative;
+}
+
+footer a { color:var(--muted); }
+
+/* STICKY */
+.sticky-btn {
+  position:fixed; bottom:24px; left:50%;
+  transform:translateX(-50%);
+  z-index:200;
+  background:linear-gradient(135deg,var(--accent2),#4f46e5);
+  color:#fff;
+  font-weight:800; font-size:14px;
+  padding:14px 36px;
+  border-radius:99px;
+  box-shadow:0 8px 40px rgba(0,0,0,0.5), 0 0 40px rgba(124,58,237,0.5);
+  cursor:pointer; border:none;
+  white-space:nowrap;
+  animation: slideUp 0.6s 1.5s ease both;
+  transition:transform 0.2s, opacity 0.3s;
+  text-decoration:none;
+}
+
+.sticky-btn:hover { transform:translateX(-50%) translateY(-2px); }
+
+@keyframes slideUp {
+  from{ opacity:0; transform:translateX(-50%) translateY(20px); }
+  to{ opacity:1; transform:translateX(-50%) translateY(0); }
+}
+
+/* REVEAL */
+.reveal {
+  opacity:0; transform:translateY(32px);
+  transition:opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible { opacity:1; transform:translateY(0); }
+
+/* RESPONSIVE */
+@media(max-width:640px){
+  .window-grid { grid-template-columns:1fr; }
+  .offer-box { padding:32px 20px; }
+  .guar-box { padding:28px 20px; }
+  section { padding:60px 20px; }
+  .mod-item { grid-template-columns:50px 1fr; }
+  .mod-arrow { display:none; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-dot"></div>
+  <div class="topbar-text">⚡ A janela está aberta agora. A maioria ainda não viu isso.</div>
+  <a href="#oferta" class="topbar-cta">Entrar antes da massa →</a>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Oportunidade histórica · Janela 2025–2026</div>
+
+  <h1>
+    <span class="line-dim">enquanto 99% não sabe que isso existe</span>
+    A IA está
+    <span class="line-accent">pagando quem sabe usá-la</span>
+  </h1>
+
+  <p class="hero-sub">
+    Vídeos gerados por IA, micro-SaaS, agentes autônomos e previsões de mercado — <strong>quatro mercados bilionários em formação agora.</strong> Este método ensina como entrar antes que fique saturado.
+  </p>
+
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-num">$1.3T</div>
+      <div class="hero-stat-label">Mercado de IA em 2030</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">&lt;1%</div>
+      <div class="hero-stat-label">Da população monetiza IA hoje</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">2025</div>
+      <div class="hero-stat-label">O ano da virada — ainda no início</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">R$3k+</div>
+      <div class="hero-stat-label">Potencial mensal com as 4 fontes</div>
+    </div>
+  </div>
+
+  <div class="hero-cta-wrap">
+    <a href="#oferta" class="btn-hero">⚡ QUERO ENTRAR ANTES DA MASSA</a>
+    <span class="btn-sub">✓ Acesso imediato · ✓ Garantia 7 dias · ✓ Funciona pelo celular</span>
+  </div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <div class="ticker-item"><span class="t-tag">SEEDANCE</span> Vídeos com IA gerando R$ 800–3.000/mês por criadores no Brasil</div>
+    <div class="ticker-item"><span class="t-tag">MICRO-SAAS</span> Ferramentas IA construídas sem código faturando $2k–10k/mês</div>
+    <div class="ticker-item"><span class="t-tag">POLYMARKET</span> Mercado de previsões movimentou $1 bilhão em 2024</div>
+    <div class="ticker-item"><span class="t-tag">AGENTES IA</span> Automações vendidas como serviço por R$ 1.500–5.000/mês</div>
+    <div class="ticker-item"><span class="t-tag">SEEDANCE</span> Vídeos com IA gerando R$ 800–3.000/mês por criadores no Brasil</div>
+    <div class="ticker-item"><span class="t-tag">MICRO-SAAS</span> Ferramentas IA construídas sem código faturando $2k–10k/mês</div>
+    <div class="ticker-item"><span class="t-tag">POLYMARKET</span> Mercado de previsões movimentou $1 bilhão em 2024</div>
+    <div class="ticker-item"><span class="t-tag">AGENTES IA</span> Automações vendidas como serviço por R$ 1.500–5.000/mês</div>
+  </div>
+</div>
+
+<!-- A JANELA -->
+<section class="reveal">
+  <div class="s-tag">o momento histórico</div>
+  <h2>Estamos em <span class="g">1994 da internet</span> — mas para IA</h2>
+
+  <p>Em 1994, poucas pessoas entendiam o que era a internet. Quem entrou cedo — criou sites, vendeu online, construiu comunidades — acumulou riqueza que durou décadas. A maioria ficou de fora e depois precisou trabalhar para quem entrou cedo.</p>
+  <p><strong>A IA generativa está no mesmo ponto agora.</strong> As ferramentas chegaram ao nível que qualquer pessoa consegue usar para gerar valor real. E o mercado pagador ainda mal sabe que elas existem.</p>
+  <p>A janela não vai ficar aberta para sempre. Quando a massa entrar, o early adopter já vai estar estabelecido.</p>
+
+  <div class="window-grid">
+    <div class="window-cell">
+      <div class="wc-label red">✗ Quem chegou tarde na internet</div>
+      <h3>Trabalhador da economia digital</h3>
+      <p>Entrou quando já estava saturado. Competiu com milhares. Precisou de anos para construir algo.</p>
+    </div>
+    <div class="window-cell highlight">
+      <div class="wc-label green">✓ Você agora com IA</div>
+      <h3>Early adopter da economia de IA</h3>
+      <p>Entra quando quase ninguém sabe. Constrói autoridade e renda antes da saturação. O tempo trabalha a seu favor.</p>
+    </div>
+    <div class="window-cell">
+      <div class="wc-label red">✗ Renda extra tradicional</div>
+      <h3>Competição brutal, margem baixa</h3>
+      <p>Freelancer comum. Afiliado de produto saturado. Venda de commodity. Difícil de diferenciar.</p>
+    </div>
+    <div class="window-cell highlight">
+      <div class="wc-label green">✓ Renda com IA (este método)</div>
+      <h3>Mercado sem concorrência real ainda</h3>
+      <p>Poucos brasileiros monetizando IA. Clientes pagam mais por quem domina. Barreira de entrada baixa agora.</p>
+    </div>
+  </div>
+</section>
+
+<!-- AS 4 OPORTUNIDADES -->
+<section class="reveal">
+  <div class="s-tag">o que você vai dominar</div>
+  <h2>As <span class="g">4 oportunidades</span> que quase ninguém está explorando</h2>
+  <p>Cada uma destas fontes existe hoje, paga hoje, e tem menos de 1% da população brasileira explorando. Você vai aprender todas as quatro e escolher por onde começar.</p>
+
+  <div class="opp-grid">
+    <div class="opp-card c1">
+      <span class="opp-icon">🎬</span>
+      <span class="opp-tag">Fonte 01</span>
+      <h3>Vídeos com IA</h3>
+      <p>Seedance, Kling AI e Runway geram vídeos profissionais a partir de texto. Você vende esses vídeos para marcas, influenciadores e agências que ainda pagam caro por produção humana.</p>
+      <div class="opp-potential">💰 R$ 800–3.500/mês</div>
+    </div>
+    <div class="opp-card c2">
+      <span class="opp-icon">⚙️</span>
+      <span class="opp-tag">Fonte 02</span>
+      <h3>Micro-SaaS com IA</h3>
+      <p>Ferramentas simples construídas com IA (sem programação) resolvendo problemas específicos de nicho. Você cobra assinatura mensal. Uma ferramenta pode gerar renda recorrente por anos.</p>
+      <div class="opp-potential">💰 R$ 1.500–8.000/mês</div>
+    </div>
+    <div class="opp-card c3">
+      <span class="opp-icon">🤖</span>
+      <span class="opp-tag">Fonte 03</span>
+      <h3>Agentes de IA</h3>
+      <p>Automações inteligentes que executam tarefas repetitivas para empresas: atendimento, geração de conteúdo, análise de dados. Você configura uma vez e vende como serviço mensal.</p>
+      <div class="opp-potential">💰 R$ 1.500–5.000/mês</div>
+    </div>
+    <div class="opp-card c4">
+      <span class="opp-icon">📊</span>
+      <span class="opp-tag">Fonte 04</span>
+      <h3>Polymarket & Previsões</h3>
+      <p>O maior mercado de previsões do mundo ainda pouco explorado por brasileiros. Com análise correta de probabilidades, é possível gerar retorno consistente sobre eventos verificáveis.</p>
+      <div class="opp-potential">💰 R$ 500–2.000/mês</div>
+    </div>
+  </div>
+</section>
+
+<!-- DOR -->
+<section class="reveal">
+  <div class="s-tag">o problema atual</div>
+  <h2>Por que você ainda <span class="g">não monetizou</span> sua inteligência?</h2>
+  <p>Não é falta de capacidade. É falta de um sistema que mostre exatamente por onde começar em cada uma dessas oportunidades.</p>
+
+  <ul class="pain-list">
+    <li><span class="px">✗</span>Sabe que a IA está mudando tudo, mas não sabe como transformar isso em dinheiro</li>
+    <li><span class="px">✗</span>Já tentou usar ChatGPT para ganhar dinheiro mas não saiu do lugar</li>
+    <li><span class="px">✗</span>Ouviu falar em Seedance, Polymarket ou micro-SaaS mas não sabe como começar</li>
+    <li><span class="px">✗</span>Está assistindo outros faturarem com IA enquanto você ainda trabalha igual a 10 anos atrás</li>
+    <li><span class="px">✗</span>Tem medo de que quando aprender, já vai estar tarde demais</li>
+  </ul>
+</section>
+
+<!-- MÓDULOS PREVIEW -->
+<section class="reveal">
+  <div class="s-tag">o método completo</div>
+  <h2>6 módulos para ir do <span class="g">zero ao faturamento</span></h2>
+  <p>Cada módulo termina com uma ação concreta. Sem teoria inútil. Sem enrolação.</p>
+
+  <div class="modules-list">
+    <div class="mod-item">
+      <div class="mod-num">MÓD 01</div>
+      <div>
+        <div class="mod-title">A Janela — entendendo a oportunidade histórica</div>
+        <div class="mod-desc">Por que 2025 é o ano de entrar. Como o early adopter ganha mais com menos esforço.</div>
+      </div>
+      <div class="mod-arrow">›</div>
+    </div>
+    <div class="mod-item">
+      <div class="mod-num">MÓD 02</div>
+      <div>
+        <div class="mod-title">Vídeos com IA — Seedance, Kling e Runway</div>
+        <div class="mod-desc">Como gerar vídeos profissionais e vender para marcas. Plataformas, precificação e primeiros clientes.</div>
+      </div>
+      <div class="mod-arrow">›</div>
+    </div>
+    <div class="mod-item">
+      <div class="mod-num">MÓD 03</div>
+      <div>
+        <div class="mod-title">Micro-SaaS com IA — sem programação</div>
+        <div class="mod-desc">Como construir ferramentas de IA com no-code e vender assinatura mensal. Os 10 nichos mais lucrativos.</div>
+      </div>
+      <div class="mod-arrow">›</div>
+    </div>
+    <div class="mod-item">
+      <div class="mod-num">MÓD 04</div>
+      <div>
+        <div class="mod-title">Agentes de IA — venda automação como serviço</div>
+        <div class="mod-desc">Configure agentes para empresas e cobre recorrência mensal. Como encontrar e fechar clientes em 7 dias.</div>
+      </div>
+      <div class="mod-arrow">›</div>
+    </div>
+    <div class="mod-item">
+      <div class="mod-num">MÓD 05</div>
+      <div>
+        <div class="mod-title">Polymarket — análise e previsões lucrativas</div>
+        <div class="mod-desc">Como o mercado de previsões funciona. Estratégia de análise de probabilidade com IA para maximizar retorno.</div>
+      </div>
+      <div class="mod-arrow">›</div>
+    </div>
+    <div class="mod-item">
+      <div class="mod-num">MÓD 06</div>
+      <div>
+        <div class="mod-title">Escala — de R$ 500 para R$ 3.000+/mês</div>
+        <div class="mod-desc">Como combinar as fontes. Automação da renda. Construir ativos de IA que pagam mesmo sem trabalhar.</div>
+      </div>
+      <div class="mod-arrow">›</div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="reveal">
+  <div class="s-tag">resultados reais</div>
+  <h2>Quem entrou <span class="g">antes da massa</span></h2>
+
+  <div class="testi-grid">
+    <div class="testi">
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-text">"Comecei vendendo vídeos gerados no Seedance para uma agência de marketing. No primeiro mês fiz R$ 1.200. No segundo, R$ 2.800. E eu não sabia nada de edição antes."</div>
+      <div class="testi-author">
+        <div class="testi-av">GM</div>
+        <div>
+          <div class="testi-name">Gabriel Mota</div>
+          <div class="testi-role">São Paulo, SP · Ex-vendedor CLT</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi">
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-text">"Construí um micro-SaaS de geração de legendas com IA usando o que aprendi no módulo 3. 18 assinantes pagando R$ 97/mês. É R$ 1.746 entrando todo mês sem fazer mais nada."</div>
+      <div class="testi-author">
+        <div class="testi-av">RF</div>
+        <div>
+          <div class="testi-name">Rodrigo Farias</div>
+          <div class="testi-role">Curitiba, PR · Analista de TI</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi">
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-text">"Nunca imaginei que venderia agentes de IA para empresas. Hoje tenho 3 clientes pagando R$ 1.200/mês cada um por automações que levei 2 dias para configurar."</div>
+      <div class="testi-author">
+        <div class="testi-av">LS</div>
+        <div>
+          <div class="testi-name">Lucas Souza</div>
+          <div class="testi-role">BH, MG · Professor particular</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi">
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-text">"O módulo do Polymarket mudou minha relação com análise de dados. Uso IA para avaliar probabilidades e em 60 dias tive retorno de 34% sobre o que investi na plataforma."</div>
+      <div class="testi-author">
+        <div class="testi-av">DP</div>
+        <div>
+          <div class="testi-name">Diego Pacheco</div>
+          <div class="testi-role">Porto Alegre, RS · Engenheiro</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GARANTIA -->
+<section class="reveal">
+  <div class="s-tag">risco zero</div>
+  <h2>Garantia <span class="g">incondicional</span> de 7 dias</h2>
+
+  <div class="guar-box">
+    <span class="guar-icon">🛡️</span>
+    <h3>Não funcionou? Devolvo tudo.</h3>
+    <p>Você tem 7 dias para entrar, explorar todos os módulos e aplicar o método. Se por qualquer motivo não ficar satisfeito — ou simplesmente mudar de ideia — devolvo 100% do valor. Sem burocracia, sem perguntas. O risco é inteiramente meu.</p>
+  </div>
+</section>
+
+<!-- OFERTA -->
+<section id="oferta" class="reveal">
+  <div class="s-tag">investimento</div>
+  <h2>Entre agora enquanto a <span class="g">janela está aberta</span></h2>
+
+  <div class="offer-box">
+    <div class="offer-badge">🔥 Oferta de lançamento — preço sobe em breve</div>
+    <p class="offer-original">De R$ 297,00</p>
+    <div class="offer-price"><sup>R$</sup>97<sub>,00</sub></div>
+    <p class="offer-installment">ou <strong>12x de R$ 9,70</strong> no cartão · À vista no Pix</p>
+
+    <ul class="offer-includes">
+      <li>Módulo 01 — A Janela: oportunidade histórica da IA</li>
+      <li>Módulo 02 — Vídeos com IA: Seedance, Kling e Runway</li>
+      <li>Módulo 03 — Micro-SaaS com IA sem programação</li>
+      <li>Módulo 04 — Agentes de IA como serviço recorrente</li>
+      <li>Módulo 05 — Polymarket: análise e previsões lucrativas</li>
+      <li>Módulo 06 — Escala: R$ 500 → R$ 3.000+/mês</li>
+      <li>🎁 Bônus: 10 prompts de IA para gerar vídeos que vendem</li>
+      <li>🎁 Bônus: Lista dos 20 melhores nichos para micro-SaaS</li>
+      <li>🎁 Bônus: Template de proposta para fechar clientes de agente IA</li>
+      <li>🎁 Bônus: Guia de análise de probabilidade no Polymarket</li>
+      <li>Acesso vitalício + todas as atualizações futuras</li>
+      <li>Comunidade exclusiva de early adopters no WhatsApp</li>
+      <li>Garantia incondicional de 7 dias</li>
+    </ul>
+
+    <a href="SEU-LINK-DE-PAGAMENTO-AQUI" class="btn-offer">
+      ⚡ QUERO ENTRAR AGORA — R$ 97,00
+    </a>
+    <p class="offer-secure">🔒 Pagamento 100% seguro · Pix, Cartão ou Boleto · Via Kiwify</p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="reveal">
+  <div class="s-tag">dúvidas</div>
+  <h2>Perguntas <span class="g">frequentes</span></h2>
+
+  <div class="faq">
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        Preciso saber programar para construir micro-SaaS ou agentes de IA?
+        <span class="faq-arrow">▾</span>
+      </div>
+      <div class="faq-a">
+        <div class="faq-a-inner">Não. O método usa plataformas no-code como Bubble, Make (Integromat) e ferramentas de agentes como n8n e Zapier com IA integrada. Você configura visualmente, sem escrever código. Se você consegue usar WhatsApp e Instagram, consegue aplicar o método.</div>
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        O Polymarket é legal no Brasil?
+        <span class="faq-arrow">▾</span>
+      </div>
+      <div class="faq-a">
+        <div class="faq-a-inner">O Polymarket é uma plataforma de mercados de previsão descentralizada que opera com criptomoedas. O módulo explica o funcionamento, os riscos envolvidos e como analisar mercados com apoio de IA. Como qualquer investimento, envolve risco — o módulo ensina a gerenciar isso com análise de probabilidade, não especulação cega.</div>
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        Quanto preciso investir além do curso para começar?
+        <span class="faq-arrow">▾</span>
+      </div>
+      <div class="faq-a">
+        <div class="faq-a-inner">Para vídeos com IA: as ferramentas têm planos gratuitos para começar (Seedance tem tier free). Para micro-SaaS: as plataformas no-code têm plano gratuito até o primeiro cliente pagar. Para agentes de IA: as primeiras automações podem ser feitas com planos gratuitos do Make/Zapier. Para Polymarket: você define o capital que quer alocar.</div>
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        Em quanto tempo consigo o primeiro resultado?
+        <span class="faq-arrow">▾</span>
+      </div>
+      <div class="faq-a">
+        <div class="faq-a-inner">Quem foca em vídeos com IA geralmente consegue o primeiro cliente em 7 a 14 dias. Micro-SaaS e agentes levam um pouco mais — de 15 a 30 dias para o primeiro cliente pagante. O Polymarket pode gerar retorno desde o primeiro mercado que você entrar, dependendo da análise. Tudo depende de execução.</div>
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        Isso não vai ficar saturado rapidamente?
+        <span class="faq-arrow">▾</span>
+      </div>
+      <div class="faq-a">
+        <div class="faq-a-inner">As ferramentas evoluem mais rápido do que a saturação chega. Quem aprende o raciocínio de monetizar com IA (não só uma ferramenta específica) tem vantagem permanente — porque quando uma ferramenta satura, você já sabe como se adaptar para a próxima. O método ensina o raciocínio, não só o tutorial de uma ferramenta.</div>
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        Como funciona a garantia?
+        <span class="faq-arrow">▾</span>
+      </div>
+      <div class="faq-a">
+        <div class="faq-a-inner">7 dias completos para testar tudo. Se não gostar por qualquer motivo, é só solicitar o reembolso diretamente na plataforma Kiwify — o processo é automático e você recebe o dinheiro de volta sem precisar entrar em contato comigo.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 Método IA Income · Todos os direitos reservados</p>
+  <p><a href="#">Política de Privacidade</a> · <a href="#">Termos de Uso</a></p>
+  <p style="margin-top:6px">Produto distribuído via <strong>Kiwify</strong> · Pagamento 100% seguro.</p>
+  <p style="margin-top:8px;font-size:11px;max-width:560px;margin-left:auto;margin-right:auto;">Os resultados apresentados são individuais e dependem de dedicação e execução de cada aluno. Polymarket envolve risco financeiro — invista apenas o que pode perder. Este não é um conselho financeiro.</p>
+</footer>
+
+<a href="#oferta" class="sticky-btn">⚡ ENTRAR ANTES DA MASSA — R$ 97</a>
+
+<script>
+function toggleFaq(q) {
+  q.parentElement.classList.toggle('open');
+}
+
+const reveals = document.querySelectorAll('.reveal');
+const obs = new IntersectionObserver(e => {
+  e.forEach(en => { if(en.isIntersecting) en.target.classList.add('visible'); });
+}, { threshold:0.08 });
+reveals.forEach(r => obs.observe(r));
+
+const oferta = document.getElementById('oferta');
+const sticky = document.querySelector('.sticky-btn');
+const obsOffer = new IntersectionObserver(e => {
+  e.forEach(en => { sticky.style.opacity = en.isIntersecting ? '0' : '1'; });
+}, { threshold:0.3 });
+obsOffer.observe(oferta);
+</script>
+</body>
+</html>

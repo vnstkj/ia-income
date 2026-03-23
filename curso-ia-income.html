@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Método IA Income — Área de Membros</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Instrument+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#07070d;
+  --surface:#0f0f1a;
+  --surface2:#16162a;
+  --border:#1e1e32;
+  --accent:#00e5ff;
+  --accent2:#7c3aed;
+  --accent3:#f59e0b;
+  --green:#10b981;
+  --red:#ef4444;
+  --text:#d4d4f0;
+  --muted:#5a5a8a;
+  --white:#fff;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Instrument Sans',sans-serif;
+  font-size:16px;line-height:1.7;min-height:100vh;
+}
+
+/* LAYOUT */
+.layout{display:flex;min-height:100vh;}
+
+/* SIDEBAR */
+.sidebar{
+  width:290px;flex-shrink:0;
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  position:fixed;top:0;left:0;bottom:0;
+  overflow-y:auto;z-index:50;
+  transition:transform 0.3s;
+}
+
+.sb-logo{
+  padding:22px 22px 16px;
+  border-bottom:1px solid var(--border);
+}
+
+.sb-logo .logo-sup{
+  font-size:10px;font-weight:700;letter-spacing:3px;
+  color:var(--accent);text-transform:uppercase;margin-bottom:3px;
+}
+
+.sb-logo h2{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:22px;color:var(--white);line-height:1.1;
+}
+
+/* Progress */
+.sb-progress{padding:14px 22px;border-bottom:1px solid var(--border);}
+.sb-prog-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:7px;}
+.sb-prog-bar{height:3px;background:var(--border);border-radius:99px;overflow:hidden;}
+.sb-prog-fill{
+  height:100%;width:0%;border-radius:99px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  transition:width 0.5s ease;
+}
+
+/* Nav */
+.sb-section{padding:18px 0 6px;}
+.sb-section-label{
+  font-size:10px;font-weight:700;letter-spacing:2.5px;
+  text-transform:uppercase;color:var(--muted);
+  padding:0 22px;margin-bottom:3px;
+}
+
+.sb-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 22px;cursor:pointer;
+  transition:background 0.15s;
+  border-left:3px solid transparent;
+  font-size:13px;color:var(--muted);
+}
+.sb-item:hover{background:rgba(255,255,255,0.04);color:var(--text);}
+.sb-item.active{
+  background:rgba(0,229,255,0.07);
+  border-left-color:var(--accent);
+  color:var(--accent);font-weight:600;
+}
+.sb-item.done{color:var(--green);}
+.sb-num{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:12px;color:inherit;opacity:0.7;
+  width:26px;flex-shrink:0;
+}
+
+/* MAIN */
+.main{margin-left:290px;flex:1;min-height:100vh;}
+
+/* TOPBAR */
+.topbar{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:14px 36px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:40;
+}
+.tb-info{}
+.tb-title{font-weight:700;font-size:15px;color:var(--white);}
+.tb-meta{font-size:12px;color:var(--muted);margin-top:2px;}
+.btn-mark{
+  background:var(--accent);color:#000;
+  font-weight:700;font-size:12px;
+  padding:8px 18px;border-radius:6px;
+  border:none;cursor:pointer;transition:opacity 0.2s;
+}
+.btn-mark:hover{opacity:0.85;}
+.menu-btn{display:none;background:none;border:none;color:var(--text);font-size:22px;cursor:pointer;}
+
+/* CONTENT */
+.content{padding:44px 36px;max-width:800px;}
+.page{display:none;}
+.page.active{display:block;animation:fadeIn 0.35s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* Typography */
+.mod-pill{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:5px 14px;border-radius:99px;
+  font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:20px;
+}
+.mod-pill.cyan{background:rgba(0,229,255,0.1);border:1px solid rgba(0,229,255,0.25);color:var(--accent);}
+.mod-pill.purple{background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.3);color:var(--accent2);}
+.mod-pill.amber{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:var(--accent3);}
+.mod-pill.green{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:var(--green);}
+
+h1{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(34px,5vw,56px);
+  color:var(--white);line-height:0.95;
+  margin-bottom:18px;
+}
+h1 .g{
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+.intro{
+  font-size:17px;color:var(--text);
+  border-left:3px solid var(--accent);
+  padding-left:18px;margin-bottom:36px;
+  max-width:680px;
+}
+.intro.purple{border-left-color:var(--accent2);}
+.intro.amber{border-left-color:var(--accent3);}
+.intro.green{border-left-color:var(--green);}
+
+h2{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:28px;color:var(--white);
+  margin:40px 0 14px;letter-spacing:0.5px;
+}
+h3{font-size:17px;font-weight:700;color:var(--white);margin:24px 0 10px;}
+p{color:var(--muted);margin-bottom:14px;line-height:1.8;}
+p strong{color:var(--text);}
+
+/* Boxes */
+.box{border-radius:10px;padding:18px 22px;margin:22px 0;}
+.box .bl{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.box p{margin:0;}
+.box-tip{background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.18);}
+.box-tip .bl{color:var(--accent);}
+.box-act{background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.18);}
+.box-act .bl{color:var(--green);}
+.box-warn{background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.18);}
+.box-warn .bl{color:var(--accent3);}
+.box-purple{background:rgba(124,58,237,0.06);border:1px solid rgba(124,58,237,0.18);}
+.box-purple .bl{color:var(--accent2);}
+
+/* Steps */
+.steps{list-style:none;counter-reset:s;margin:16px 0 22px;}
+.steps li{
+  counter-increment:s;
+  display:flex;gap:14px;margin-bottom:14px;align-items:flex-start;
+}
+.steps li::before{
+  content:counter(s);
+  background:var(--accent);color:#000;
+  font-weight:800;font-size:11px;
+  width:24px;height:24px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:4px;
+}
+.steps.purple li::before{background:var(--accent2);color:#fff;}
+.steps.amber li::before{background:var(--accent3);color:#000;}
+.steps.green li::before{background:var(--green);color:#000;}
+.steps li span{color:var(--text);line-height:1.7;}
+
+/* Checklist */
+.chk{list-style:none;margin:14px 0;}
+.chk li{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:10px 0;border-bottom:1px solid var(--border);
+  font-size:14px;color:var(--text);
+}
+.chk li:last-child{border:none;}
+.chk li::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0;margin-top:2px;}
+.chk.cx li::before{content:'✗';color:var(--red);}
+.chk.diamond li::before{content:'◆';color:var(--accent);font-size:10px;margin-top:5px;}
+
+/* Table */
+.tw{overflow-x:auto;margin:18px 0;}
+table{width:100%;border-collapse:collapse;font-size:14px;}
+th{background:var(--surface2);color:var(--white);font-weight:700;padding:12px 16px;text-align:left;border-bottom:2px solid var(--accent);}
+td{padding:11px 16px;border-bottom:1px solid var(--border);color:var(--muted);}
+td strong{color:var(--text);}
+tr:last-child td{border:none;}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:24px 0;}
+.stat{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:18px;text-align:center;}
+.stat-n{font-family:'Bebas Neue',sans-serif;font-size:34px;color:var(--accent);line-height:1;}
+.stat-n.purple{color:var(--accent2);}
+.stat-n.amber{color:var(--accent3);}
+.stat-n.green{color:var(--green);}
+.stat-l{font-size:11px;color:var(--muted);margin-top:4px;}
+
+/* Code/prompt box */
+.prompt-box{
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:20px 22px;
+  margin:18px 0;
+  font-size:14px;line-height:1.9;
+  color:var(--text);
+  position:relative;
+}
+.prompt-box .pl{
+  position:absolute;top:-10px;left:14px;
+  background:var(--accent);color:#000;
+  font-size:10px;font-weight:800;
+  padding:2px 10px;border-radius:99px;
+  letter-spacing:1px;
+}
+.prompt-box.purple .pl{background:var(--accent2);color:#fff;}
+.prompt-box.amber .pl{background:var(--accent3);color:#000;}
+.prompt-box.green .pl{background:var(--green);color:#000;}
+.prompt-box em{color:var(--accent);font-style:normal;font-weight:600;}
+.prompt-box.purple em{color:#a78bfa;}
+
+/* Niches grid */
+.niche-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:10px;margin:18px 0;
+}
+.niche-card{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:8px;padding:16px;
+  font-size:13px;
+}
+.niche-card .nc-icon{font-size:22px;margin-bottom:8px;}
+.niche-card .nc-name{font-weight:700;color:var(--white);margin-bottom:4px;}
+.niche-card .nc-price{font-size:12px;color:var(--green);font-weight:600;}
+
+/* Nav buttons */
+.nav-btns{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-top:56px;padding-top:28px;
+  border-top:1px solid var(--border);gap:14px;
+}
+.btn-prev{
+  padding:12px 26px;border-radius:8px;
+  font-weight:700;font-size:14px;cursor:pointer;
+  background:var(--surface2);color:var(--muted);
+  border:1px solid var(--border);transition:color 0.2s;
+}
+.btn-prev:hover{color:var(--text);}
+.btn-next{
+  padding:14px 34px;border-radius:8px;
+  font-weight:700;font-size:15px;cursor:pointer;border:none;
+  background:linear-gradient(135deg,var(--accent2),#4f46e5);
+  color:#fff;transition:opacity 0.2s,transform 0.2s;
+}
+.btn-next:hover{opacity:0.88;transform:translateY(-1px);}
+
+/* Dashboard cards */
+.dash-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:10px;margin:28px 0;
+}
+.dash-card{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:12px;padding:22px;cursor:pointer;
+  transition:all 0.2s;
+}
+.dash-card:hover{border-color:rgba(0,229,255,0.3);transform:translateY(-2px);}
+.dc-mod{font-size:10px;font-weight:700;letter-spacing:2px;color:var(--accent);text-transform:uppercase;margin-bottom:8px;}
+.dc-mod.purple{color:var(--accent2);}
+.dc-mod.amber{color:var(--accent3);}
+.dc-mod.green{color:var(--green);}
+.dash-card h3{font-size:15px;color:var(--white);margin:0 0 6px;}
+.dash-card p{font-size:12px;margin:0;}
+
+/* Mobile overlay */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:45;}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .overlay.open{display:block;}
+  .main{margin-left:0;}
+  .topbar{padding:14px 18px;}
+  .content{padding:26px 18px;}
+  .menu-btn{display:block;}
+  .stats{grid-template-columns:repeat(2,1fr);}
+  .nav-btns{flex-direction:column;}
+  .btn-next,.btn-prev{width:100%;text-align:center;}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sb">
+  <div class="sb-logo">
+    <div class="logo-sup">Área de Membros</div>
+    <h2>Método IA Income</h2>
+  </div>
+  <div class="sb-progress">
+    <div class="sb-prog-labels"><span>Progresso</span><span id="pct">0%</span></div>
+    <div class="sb-prog-bar"><div class="sb-prog-fill" id="fill"></div></div>
+  </div>
+  <div class="sb-section">
+    <div class="sb-section-label">Início</div>
+    <div class="sb-item active" onclick="go(0)" id="ni0"><span class="sb-num">—</span>Dashboard</div>
+  </div>
+  <div class="sb-section">
+    <div class="sb-section-label">Módulos</div>
+    <div class="sb-item" onclick="go(1)" id="ni1"><span class="sb-num">01</span>A Janela Histórica</div>
+    <div class="sb-item" onclick="go(2)" id="ni2"><span class="sb-num">02</span>Vídeos com IA</div>
+    <div class="sb-item" onclick="go(3)" id="ni3"><span class="sb-num">03</span>Micro-SaaS com IA</div>
+    <div class="sb-item" onclick="go(4)" id="ni4"><span class="sb-num">04</span>Agentes de IA</div>
+    <div class="sb-item" onclick="go(5)" id="ni5"><span class="sb-num">05</span>Polymarket</div>
+    <div class="sb-item" onclick="go(6)" id="ni6"><span class="sb-num">06</span>Escala R$3k+</div>
+  </div>
+  <div class="sb-section">
+    <div class="sb-section-label">Bônus</div>
+    <div class="sb-item" onclick="go(7)" id="ni7"><span class="sb-num">🎁</span>Kit Early Adopter</div>
+  </div>
+</aside>
+<div class="overlay" id="ov" onclick="closeSB()"></div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <button class="menu-btn" onclick="toggleSB()">☰</button>
+    <div class="tb-info">
+      <div class="tb-title" id="tbt">Dashboard</div>
+      <div class="tb-meta" id="tbm">Bem-vindo ao Método IA Income</div>
+    </div>
+    <button class="btn-mark" id="bmk" onclick="markDone()" style="display:none">✓ Marcar como lido</button>
+  </div>
+
+  <div class="content">
+
+    <!-- PAGE 0: DASHBOARD -->
+    <div class="page active" id="p0">
+      <div class="mod-pill cyan">Early Adopter · 2025</div>
+      <h1>Bem-vindo à <span class="g">janela aberta</span></h1>
+      <p class="intro">Você está entre os poucos que entraram cedo. Agora é sobre execução. Siga a ordem dos módulos — cada um constrói o próximo.</p>
+
+      <div class="stats">
+        <div class="stat"><div class="stat-n">6</div><div class="stat-l">Módulos completos</div></div>
+        <div class="stat"><div class="stat-n purple">4</div><div class="stat-l">Fontes de renda com IA</div></div>
+        <div class="stat"><div class="stat-n amber">R$3k</div><div class="stat-l">Potencial mensal</div></div>
+      </div>
+
+      <div class="dash-grid">
+        <div class="dash-card" onclick="go(1)"><div class="dc-mod">Módulo 01</div><h3>A Janela Histórica</h3><p>Por que entrar agora muda tudo. O raciocínio do early adopter.</p></div>
+        <div class="dash-card" onclick="go(2)"><div class="dc-mod">Módulo 02</div><h3>Vídeos com IA</h3><p>Seedance, Kling e Runway. Como vender vídeos profissionais sem câmera.</p></div>
+        <div class="dash-card" onclick="go(3)"><div class="dc-mod purple">Módulo 03</div><h3>Micro-SaaS com IA</h3><p>Ferramentas de IA sem código. Assinatura mensal recorrente.</p></div>
+        <div class="dash-card" onclick="go(4)"><div class="dc-mod amber">Módulo 04</div><h3>Agentes de IA</h3><p>Automações inteligentes como serviço. Clientes que pagam todo mês.</p></div>
+        <div class="dash-card" onclick="go(5)"><div class="dc-mod green">Módulo 05</div><h3>Polymarket</h3><p>Mercado de previsões com análise de IA. Como maximizar o retorno.</p></div>
+        <div class="dash-card" onclick="go(6)"><div class="dc-mod">Módulo 06</div><h3>Escala R$3k+</h3><p>Combinar fontes, automatizar renda, construir ativos duráveis.</p></div>
+      </div>
+
+      <div class="box box-tip">
+        <div class="bl">💡 Regra de ouro</div>
+        <p>Não avance para o próximo módulo sem executar a ação final do anterior. O conhecimento sem ação é zero. A ação sem conhecimento é pouco. Os dois juntos, na ordem certa, é o método.</p>
+      </div>
+
+      <div class="nav-btns">
+        <div></div>
+        <button class="btn-next" onclick="go(1)">Começar: Módulo 01 →</button>
+      </div>
+    </div>
+
+    <!-- PAGE 1: MÓDULO 01 — A JANELA -->
+    <div class="page" id="p1">
+      <div class="mod-pill cyan">Módulo 01</div>
+      <h1>A <span class="g">Janela</span> Histórica</h1>
+      <p class="intro">Por que 2025 é o momento exato para entrar — e o que acontece com quem esperar mais.</p>
+
+      <h2>A internet em 1994</h2>
+      <p>Em 1994, menos de 1% da população mundial usava a internet. Quem construiu sites, abriu lojas virtuais ou criou conteúdo naquele momento acumulou vantagem competitiva por décadas. A barreira de entrada era técnica — HTML, servidores, conexão discada.</p>
+      <p>Quando a massa chegou — anos depois — os early adopters já tinham audiência, autoridade e sistemas rodando. <strong>Os retardatários tiveram que trabalhar muito mais para conseguir muito menos.</strong></p>
+
+      <h2>A IA generativa em 2025</h2>
+      <p>Hoje, as ferramentas de IA chegaram ao nível que qualquer pessoa consegue usar para gerar valor comercial real. Sem programação. Sem anos de estudo. A barreira de entrada desapareceu.</p>
+      <p>Mas diferente da internet de 1994, <strong>a janela vai fechar muito mais rápido</strong> — porque a IA acelera sua própria adoção. Em 18 a 24 meses, o que é diferencial hoje será commodity.</p>
+
+      <div class="stats">
+        <div class="stat"><div class="stat-n">&lt;1%</div><div class="stat-l">Monetiza IA hoje no Brasil</div></div>
+        <div class="stat"><div class="stat-n purple">18mo</div><div class="stat-l">Janela estimada até saturação</div></div>
+        <div class="stat"><div class="stat-n amber">$1.3T</div><div class="stat-l">Mercado de IA em 2030</div></div>
+      </div>
+
+      <h2>O raciocínio do early adopter</h2>
+      <p>O early adopter não é o mais inteligente. Não é o mais técnico. É simplesmente quem <strong>age antes que a oportunidade seja óbvia para todos.</strong></p>
+      <p>Quando uma oportunidade fica óbvia, ela já está se tornando competitiva. Você quer entrar quando ainda parece desconhecido, estranho, "coisa de nicho". Esse é o momento de máxima vantagem.</p>
+
+      <div class="tw">
+        <table>
+          <tr><th>Momento</th><th>Quem está lá</th><th>Esforço para resultado</th></tr>
+          <tr><td><strong>Agora (2025)</strong></td><td>Early adopters — você</td><td>Baixo. Pouca competição.</td></tr>
+          <tr><td><strong>2026–2027</strong></td><td>Maioria curiosa chegando</td><td>Médio. Mercado crescendo.</td></tr>
+          <tr><td><strong>2028+</strong></td><td>Todo mundo</td><td>Alto. Saturação. Precisa ser melhor.</td></tr>
+        </table>
+      </div>
+
+      <h2>As 4 oportunidades deste método</h2>
+      <p>Este método cobre os quatro mercados de monetização com IA que combinam três características raras ao mesmo tempo: <strong>barreira de entrada baixa, demanda real pagadora e pouca concorrência brasileira.</strong></p>
+      <ul class="chk diamond">
+        <li>Vídeos com IA (Seedance, Kling, Runway) — geração e venda de vídeo profissional</li>
+        <li>Micro-SaaS com IA — ferramentas de IA vendidas como assinatura mensal</li>
+        <li>Agentes de IA — automações inteligentes vendidas como serviço recorrente</li>
+        <li>Polymarket — mercado de previsões com análise potencializada por IA</li>
+      </ul>
+
+      <div class="box box-act">
+        <div class="bl">✅ Ação do Módulo 01</div>
+        <p>Escreva no celular: <strong>"Estou entrando agora, quando a janela ainda está aberta. Daqui a 18 meses quero olhar para trás e ver que entrei cedo."</strong> Guarde isso. Vai te ajudar nos momentos de dúvida.</p>
+      </div>
+
+      <div class="nav-btns">
+        <button class="btn-prev" onclick="go(0)">← Início</button>
+        <button class="btn-next" onclick="go(2)">Módulo 02: Vídeos com IA →</button>
+      </div>
+    </div>
+
+    <!-- PAGE 2: MÓDULO 02 — VÍDEOS COM IA -->
+    <div class="page" id="p2">
+      <div class="mod-pill cyan">Módulo 02</div>
+      <h1>Vídeos com IA — <span class="g">Seedance, Kling e Runway</span></h1>
+      <p class="intro">Como gerar vídeos de qualidade cinematográfica com IA e vender para marcas, agências e criadores — sem câmera, sem edição, sem experiência.</p>
+
+      <h2>O mercado que poucos perceberam</h2>
+      <p>Agências de marketing pagam entre R$ 800 e R$ 5.000 por vídeo profissional. Produção humana leva dias, exige equipe e equipamento. <strong>Com IA, você entrega o mesmo resultado em minutos, sozinho, pelo computador.</strong></p>
+      <p>A maioria das agências e marcas brasileiras ainda não sabe que isso é possível neste nível. Quem chega primeiro com essa proposta ganha.</p>
+
+      <h2>As plataformas que você vai usar</h2>
+
+      <h3>🎬 Seedance AI</h3>
+      <p>Geração de vídeo por texto e por imagem de referência. Resultado cinematográfico com movimentos de câmera realistas. Ideal para vídeos de produto, publicidade e conteúdo de marca.</p>
+      <div class="tw">
+        <table>
+          <tr><th>Item</th><th>Detalhe</th></tr>
+          <tr><td><strong>Acesso</strong></td><td>seedance.ai — plano gratuito disponível para início</td></tr>
+          <tr><td><strong>Melhor para</strong></td><td>Vídeos de produto, publicidade, B-roll cinemático</td></tr>
+          <tr><td><strong>Tempo de geração</strong></td><td>2 a 5 minutos por clipe</td></tr>
+          <tr><td><strong>Resolução máxima</strong></td><td>1080p — suficiente para redes sociais e web</td></tr>
+          <tr><td><strong>Diferencial</strong></td><td>Movimentos de câmera controláveis, alta consistência</td></tr>
+        </table>
+      </div>
+
+      <h3>🎬 Kling AI</h3>
+      <p>Especializado em vídeos com movimento de pessoas e objetos. Ótimo para moda, lifestyle e e-commerce. Tem integração com imagem de referência — você alimenta uma foto do produto e gera o vídeo.</p>
+
+      <h3>🎬 Runway Gen-3</h3>
+      <p>O mais avançado em termos de controle criativo. Permite direcionar câmera, editar frame a frame e combinar com vídeos reais. Ideal para projetos que exigem mais refinamento.</p>
+
+      <div class="box box-tip">
+        <div class="bl">💡 Estratégia: comece com Seedance</div>
+        <p>Tem tier gratuito suficiente para montar um portfólio inicial. Quando começar a faturar, reinvista em créditos pagos para aumentar a capacidade de produção.</p>
+      </div>
+
+      <h2>Como construir seu portfólio do zero</h2>
+      <ol class="steps">
+        <li><span>Crie conta gratuita no Seedance. Explore os tipos de geração: text-to-video e image-to-video.</span></li>
+        <li><span>Gere 5 a 10 vídeos demonstrativos em nichos lucrativos: gastronomia, fitness, moda, tecnologia, imóveis.</span></li>
+        <li><span>Suba esses vídeos no Instagram como "antes e depois" mostrando que foram gerados com IA — isso gera curiosidade e prova.</span></li>
+        <li><span>Use o portfólio para abordar clientes — você não precisa de um site. Uma pasta no Google Drive com os melhores já serve.</span></li>
+      </ol>
+
+      <h2>Prompt que gera vídeos que vendem</h2>
+
+      <div class="prompt-box">
+        <div class="pl">PROMPT SEEDANCE — VÍDEO DE PRODUTO</div>
+        <em>Cinematic product shot of [produto], placed on [superfície], soft studio lighting, shallow depth of field, slow camera push forward, 4K quality, professional advertisement style, no text</em>
+      </div>
+
+      <div class="prompt-box">
+        <div class="pl">PROMPT SEEDANCE — LIFESTYLE</div>
+        <em>A [homem/mulher] de [idade] [ação relacionada ao produto] em [ambiente], golden hour lighting, handheld camera movement, natural and authentic, commercial grade quality</em>
+      </div>
+
+      <h2>Onde encontrar os primeiros clientes</h2>
+
+      <div class="tw">
+        <table>
+          <tr><th>Canal</th><th>Como abordar</th><th>Ticket médio</th></tr>
+          <tr><td><strong>Instagram DM</strong></td><td>Envie vídeo demonstrativo do negócio deles (não peça nada, só mostre)</td><td>R$ 300–800/vídeo</td></tr>
+          <tr><td><strong>Agências digitais</strong></td><td>Ofereça como "freelancer de produção de vídeo com IA"</td><td>R$ 500–2.000/projeto</td></tr>
+          <tr><td><strong>E-commerces</strong></td><td>Vídeos de produto são o conteúdo com maior ROI deles</td><td>R$ 200–600/vídeo</td></tr>
+          <tr><td><strong>Influenciadores</strong></td><td>B-roll e conteúdo visual para completar o feed deles</td><td>R$ 150–400/pacote</td></tr>
+        </table>
+      </div>
+
+      <h2>Script de abordagem para o primeiro cliente</h2>
+
+      <div class="prompt-box">
+        <div class="pl">DM — ABORDAGEM FRIA COM VÍDEO</div>
+        Oi <em>[Nome]</em>! Vi o perfil da <em>[marca]</em> e criei um vídeo de demonstração do <em>[produto]</em> usando IA — leva 3 segundos pra assistir.<br><br>
+        <em>[link ou vídeo em anexo]</em><br><br>
+        Produção toda feita por IA, entrega em 48h. Se tiver interesse em mais vídeos assim me fala — faço um pacote de 5 para você testar 😊
+      </div>
+
+      <div class="box box-act">
+        <div class="bl">✅ Ação do Módulo 02</div>
+        <p>Hoje: crie conta no Seedance e gere seu primeiro vídeo. Não precisa ser perfeito — precisa existir. Poste no seu Instagram stories com a legenda "Isso foi gerado por IA em 3 minutos" e observe a reação das pessoas.</p>
+      </div>
+
+      <div class="nav-btns">
+        <button class="btn-prev" onclick="go(1)">← Módulo 01</button>
+        <button class="btn-next" onclick="go(3)">Módulo 03: Micro-SaaS →</button>
+      </div>
+    </div>
+
+    <!-- PAGE 3: MÓDULO 03 — MICRO-SAAS -->
+    <div class="page" id="p3">
+      <div class="mod-pill purple">Módulo 03</div>
+      <h1>Micro-SaaS com IA — <span class="g">sem programação</span></h1>
+      <p class="intro purple">A fonte de renda mais escalável do método. Você constrói uma ferramenta uma vez — e ela gera assinatura todo mês enquanto você dorme.</p>
+
+      <h2>O que é um micro-SaaS?</h2>
+      <p>SaaS (Software as a Service) é qualquer ferramenta que as pessoas acessam pela internet e pagam mensalmente. Micro-SaaS é a versão pequena — resolvendo um problema específico para um nicho específico.</p>
+      <p>Com as ferramentas de no-code e IA disponíveis hoje, você não precisa programar nada. <strong>Você monta visualmente, integra IA, e começa a cobrar.</strong></p>
+
+      <div class="box box-purple">
+        <div class="bl">💡 Exemplo real</div>
+        <p>Uma ferramenta que pega o texto de um vídeo do YouTube e gera automaticamente um roteiro de post para Instagram + legenda + hashtags. Nicho: criadores de conteúdo. Preço: R$ 47/mês. Com 30 assinantes = R$ 1.410/mês de renda recorrente — mesmo que você não abra o computador aquele mês.</p>
+      </div>
+
+      <h2>Ferramentas para construir (todas gratuitas para começar)</h2>
+
+      <div class="tw">
+        <table>
+          <tr><th>Ferramenta</th><th>Para quê serve</th><th>Plano gratuito</th></tr>
+          <tr><td><strong>Bubble.io</strong></td><td>Construir a interface do SaaS visualmente</td><td>Sim — suficiente para MVP</td></tr>
+          <tr><td><strong>Make (Integromat)</strong></td><td>Automatizar o fluxo entre IA e banco de dados</td><td>Sim — 1.000 operações/mês</td></tr>
+          <tr><td><strong>OpenAI API</strong></td><td>Inteligência do produto (GPT-4)</td><td>Sim — crédito inicial gratuito</td></tr>
+          <tr><td><strong>Supabase</strong></td><td>Banco de dados gratuito e escalável</td><td>Sim — plano generoso</td></tr>
+          <tr><td><strong>Stripe / AbacatePay</strong></td><td>Cobrar assinaturas mensais</td><td>Sim — paga só por transação</td></tr>
+        </table>
+      </div>
+
+      <h2>Os 10 nichos com maior demanda para micro-SaaS de IA</h2>
+
+      <div class="niche-grid">
+        <div class="niche-card"><div class="nc-icon">📝</div><div class="nc-name">Gerador de contratos</div><div class="nc-price">R$ 67–147/mês</div></div>
+        <div class="niche-card"><div class="nc-icon">📱</div><div class="nc-name">Roteiro de Reels</div><div class="nc-price">R$ 37–97/mês</div></div>
+        <div class="niche-card"><div class="nc-icon">📧</div><div class="nc-name">E-mails de vendas</div><div class="nc-price">R$ 47–127/mês</div></div>
+        <div class="niche-card"><div class="nc-icon">🏪</div><div class="nc-name">Descrição de produto</div><div class="nc-price">R$ 57–97/mês</div></div>
+        <div class="niche-card"><div class="nc-icon">💼</div><div class="nc-name">Proposta comercial IA</div><div class="nc-price">R$ 97–197/mês</div></div>
+        <div class="niche-card"><div class="nc-icon">🎓</div><div class="nc-name">Resumo de aulas</div><div class="nc-price">R$ 27–67/mês</div></div>
+        <div class="niche-card"><div class="nc-icon">🏠</div><div class="nc-name">Anúncio imobiliário</div><div class="nc-price">R$ 77–147/mês</div></div>
+        <div class="niche-card"><div class="nc-icon">⚖️</div><div class="nc-name">Resumo de processo</div><div class="nc-price">R$ 97–247/mês</div></div>
+        <div class="niche-card"><div class="nc-icon">🍽️</div><div class="nc-name">Cardápio digital IA</div><div class="nc-price">R$ 47–97/mês</div></div>
+        <div class="niche-card"><div class="nc-icon">🎯</div><div class="nc-name">Headlines de anúncio</div><div class="nc-price">R$ 67–137/mês</div></div>
+      </div>
+
+      <h2>Como validar antes de construir</h2>
+      <ol class="steps purple">
+        <li><span>Escolha um nicho da lista acima. Defina o problema exato que a ferramenta resolve.</span></li>
+        <li><span>Crie uma landing page simples no Carrd.co (gratuito) descrevendo a ferramenta — mesmo que ela não exista ainda.</span></li>
+        <li><span>Divulgue para 20–30 pessoas do nicho e veja quantas clicam em "quero acesso antecipado".</span></li>
+        <li><span>Se tiver 5 ou mais interessados, construa. Se não, troque de nicho. Você validou sem gastar tempo construindo.</span></li>
+      </ol>
+
+      <div class="box box-act">
+        <div class="bl">✅ Ação do Módulo 03</div>
+        <p>Escolha um nicho da lista. Escreva em 3 frases: qual o problema, quem é o cliente, quanto vai cobrar. Isso é o briefing do seu micro-SaaS. Guarde — no próximo módulo você vai precisar focar nessa clareza.</p>
+      </div>
+
+      <div class="nav-btns">
+        <button class="btn-prev" onclick="go(2)">← Módulo 02</button>
+        <button class="btn-next" onclick="go(4)">Módulo 04: Agentes de IA →</button>
+      </div>
+    </div>
+
+    <!-- PAGE 4: MÓDULO 04 — AGENTES DE IA -->
+    <div class="page" id="p4">
+      <div class="mod-pill amber">Módulo 04</div>
+      <h1>Agentes de IA — <span class="g">automação como serviço</span></h1>
+      <p class="intro amber">Configure uma automação inteligente para uma empresa, cobre R$ 1.000–3.000 de setup e R$ 800–1.500/mês de manutenção. Escale para múltiplos clientes.</p>
+
+      <h2>O que é um agente de IA?</h2>
+      <p>Um agente de IA é uma automação que usa inteligência artificial para executar tarefas que normalmente precisariam de um humano — responder e-mails, analisar documentos, gerar relatórios, atender clientes no WhatsApp, triagem de leads.</p>
+      <p><strong>A diferença do agente para a automação simples:</strong> ele entende linguagem natural, adapta respostas ao contexto e toma decisões simples sem intervenção humana.</p>
+
+      <h2>As ferramentas que você vai usar</h2>
+
+      <div class="tw">
+        <table>
+          <tr><th>Ferramenta</th><th>Para quê</th><th>Curva de aprendizado</th></tr>
+          <tr><td><strong>n8n</strong></td><td>Orquestração de agentes — fluxo visual de automação com IA</td><td>Média — 1 semana para dominar o básico</td></tr>
+          <tr><td><strong>Zapier + OpenAI</strong></td><td>Automações simples com IA para iniciantes</td><td>Baixa — intuitivo e visual</td></tr>
+          <tr><td><strong>Make + Claude API</strong></td><td>Agentes mais complexos com raciocínio avançado</td><td>Média</td></tr>
+          <tr><td><strong>Typebot</strong></td><td>Chatbot com IA para WhatsApp e site</td><td>Baixa — drag and drop</td></tr>
+          <tr><td><strong>Voiceflow</strong></td><td>Agente de voz e texto para atendimento</td><td>Baixa-média</td></tr>
+        </table>
+      </div>
+
+      <h2>Os 5 agentes mais fáceis de vender hoje</h2>
+
+      <h3>1. Agente de Atendimento WhatsApp</h3>
+      <p>Responde dúvidas frequentes, qualifica leads e agenda horários — 24h por dia, sem contratar funcionário. <strong>Vendável para qualquer pequeno negócio com volume de mensagens.</strong></p>
+      <div class="box box-warn">
+        <div class="bl">💰 Precificação sugerida</div>
+        <p>Setup: R$ 1.500–2.500 · Manutenção mensal: R$ 500–900</p>
+      </div>
+
+      <h3>2. Agente de Triagem de Leads</h3>
+      <p>Recebe formulário de contato → qualifica automaticamente → classifica como quente/frio/descarte → envia para o vendedor só o que vale a pena. Elimina horas de trabalho manual.</p>
+
+      <h3>3. Agente de Geração de Conteúdo</h3>
+      <p>Acessa o briefing semanal da empresa → gera posts, legendas e e-mails automaticamente → entrega em pasta organizada para aprovação. Ideal para agências sobrecarregadas.</p>
+
+      <h3>4. Agente de Análise de Reviews</h3>
+      <p>Monitora Google, Reclame Aqui e redes sociais → agrupa feedbacks por tema → gera relatório semanal com pontos críticos e sugestões. Perfeito para e-commerce e varejo.</p>
+
+      <h3>5. Agente de Relatório Financeiro</h3>
+      <p>Importa dados de planilhas ou sistemas → consolida → gera relatório executivo com linguagem natural e insights. Vendável para escritórios de contabilidade e PMEs.</p>
+
+      <h2>Como fechar o primeiro cliente em 7 dias</h2>
+      <ol class="steps amber">
+        <li><span>Escolha um dos 5 agentes acima. Monte uma versão demonstrativa usando n8n ou Zapier + OpenAI — pode ser simulada.</span></li>
+        <li><span>Identifique 3 empresas na sua cidade que claramente têm o problema que o agente resolve (volume de mensagens, muitos leads, precisam de conteúdo).</span></li>
+        <li><span>Peça 15 minutos para mostrar a demo — não venda nada ainda, só mostre o agente funcionando.</span></li>
+        <li><span>Na reunião: "Posso configurar isso para vocês em X dias. Setup de R$ [valor] e manutenção de R$ [valor]/mês."</span></li>
+        <li><span>Feche contrato simples no papel ou WhatsApp. Comece a configurar no mesmo dia.</span></li>
+      </ol>
+
+      <div class="prompt-box amber">
+        <div class="pl">PROMPT — CONFIGURAÇÃO DE AGENTE DE ATENDIMENTO</div>
+        Você é um assistente de atendimento da <em>[empresa]</em>, especializada em <em>[produto/serviço]</em>.<br><br>
+        Responda sempre em português brasileiro, de forma amigável e profissional.<br><br>
+        Para dúvidas sobre preços, diga: <em>[política de preços]</em>.<br>
+        Para agendamentos, colete: nome, telefone e horário preferido e confirme.<br>
+        Para reclamações, expresse empatia e informe que um responsável entrará em contato em até 2h.<br><br>
+        Nunca invente informações. Se não souber, diga: "Vou verificar e te retorno em instantes."
+      </div>
+
+      <div class="box box-act">
+        <div class="bl">✅ Ação do Módulo 04</div>
+        <p>Crie uma conta no Zapier (gratuito). Configure um fluxo simples: formulário Google → OpenAI → resposta por e-mail. Demora 30 minutos e você terá seu primeiro agente funcionando. Isso se torna o demo que você mostra para clientes.</p>
+      </div>
+
+      <div class="nav-btns">
+        <button class="btn-prev" onclick="go(3)">← Módulo 03</button>
+        <button class="btn-next" onclick="go(5)">Módulo 05: Polymarket →</button>
+      </div>
+    </div>
+
+    <!-- PAGE 5: MÓDULO 05 — POLYMARKET -->
+    <div class="page" id="p5">
+      <div class="mod-pill green">Módulo 05</div>
+      <h1>Polymarket — <span class="g">previsões com IA</span></h1>
+      <p class="intro green">O maior mercado de previsões do mundo. Análise potencializada por IA para identificar mercados mal precificados e maximizar retorno sobre eventos verificáveis.</p>
+
+      <div class="box box-warn">
+        <div class="bl">⚠️ Aviso importante</div>
+        <p>Polymarket envolve risco financeiro real. Este módulo ensina análise de probabilidade — não é garantia de lucro. Invista apenas o que pode perder. Nunca entre em um mercado sem entender o risco.</p>
+      </div>
+
+      <h2>O que é o Polymarket?</h2>
+      <p>O Polymarket é uma plataforma descentralizada de mercados de previsão. Funciona como uma bolsa de apostas em eventos verificáveis: eleições, resultados esportivos, decisões de bancos centrais, eventos geopolíticos, lançamentos de tecnologia.</p>
+      <p>A lógica é simples: <strong>se um evento tem 70% de chance de acontecer e o mercado está precificando a 50%, você compra a chance "sim" barato e vende caro quando o mercado se corrigir — ou quando o evento acontecer.</strong></p>
+
+      <h2>Como a IA potencializa a análise</h2>
+      <p>A vantagem do early adopter no Polymarket não é sorte — é análise melhor que a média do mercado. A IA permite:</p>
+      <ul class="chk">
+        <li>Processar grandes volumes de dados históricos de eventos similares em segundos</li>
+        <li>Identificar padrões em como o mercado precifica eventos do mesmo tipo</li>
+        <li>Cruzar múltiplas fontes de notícia para avaliar probabilidade real vs. percebida</li>
+        <li>Calcular tamanho de posição ideal baseado em risco e retorno esperado</li>
+      </ul>
+
+      <h2>Configuração inicial</h2>
+      <ol class="steps green">
+        <li><span>Acesse <strong>polymarket.com</strong>. Crie uma conta — necessita carteira cripto (Metamask ou Coinbase Wallet).</span></li>
+        <li><span>Deposite USDC (dólar digital estável) — comece com o mínimo que quiser testar. Não precisa ser alto para aprender o funcionamento.</span></li>
+        <li><span>Explore os mercados disponíveis. Filtre por: volume alto (mais liquidez) e prazo de resolução próximo (mais previsível).</span></li>
+        <li><span>Antes de entrar em qualquer mercado, aplique a análise de probabilidade descrita abaixo.</span></li>
+      </ol>
+
+      <h2>Framework de análise com IA</h2>
+
+      <div class="prompt-box green">
+        <div class="pl">PROMPT DE ANÁLISE — COLE NO CHATGPT / CLAUDE</div>
+        Analise este mercado do Polymarket:<br><br>
+        Evento: <em>[descreva o evento]</em><br>
+        Preço atual do "Sim": <em>[X%]</em><br>
+        Prazo de resolução: <em>[data]</em><br><br>
+        Com base em dados históricos de eventos similares, fontes de notícia recentes e análise de probabilidade bayesiana:<br><br>
+        1. Qual a sua estimativa de probabilidade real do evento ocorrer?<br>
+        2. O mercado está superestimando ou subestimando a probabilidade?<br>
+        3. Quais fatores podem mudar essa probabilidade nos próximos dias?<br>
+        4. Em uma escala de 0 a 10, qual o nível de confiança nesta análise?<br>
+        5. Recomenda entrada, espera ou evitar este mercado?
+      </div>
+
+      <h2>Tipos de mercado para começar</h2>
+
+      <div class="tw">
+        <table>
+          <tr><th>Tipo</th><th>Exemplo</th><th>Vantagem</th></tr>
+          <tr><td><strong>Econômico</strong></td><td>Fed vai cortar juros em [mês]?</td><td>Muitos dados históricos para análise</td></tr>
+          <tr><td><strong>Tecnologia</strong></td><td>GPT-5 lança antes de [data]?</td><td>Você tem edge por seguir o setor</td></tr>
+          <tr><td><strong>Esportivo</strong></td><td>[Time] ganha campeonato?</td><td>Alta liquidez, resolução rápida</td></tr>
+          <tr><td><strong>Geopolítico</strong></td><td>[País] realiza eleição em [ano]?</td><td>Dados públicos abundantes</td></tr>
+        </table>
+      </div>
+
+      <h2>Gestão de risco</h2>
+      <ul class="chk">
+        <li>Nunca coloque mais de 10% do seu capital em um único mercado</li>
+        <li>Diversifique em pelo menos 5 mercados diferentes ao mesmo tempo</li>
+        <li>Tenha critérios claros de saída antes de entrar — não decida na emoção</li>
+        <li>Registre cada operação: entrada, raciocínio, resultado. Aprende-se mais com os registros do que com os acertos</li>
+        <li>O retorno esperado deve ser pelo menos 2x o risco para valer a entrada</li>
+      </ul>
+
+      <div class="box box-act">
+        <div class="bl">✅ Ação do Módulo 05</div>
+        <p>Acesse o Polymarket agora — sem depositar nada ainda. Escolha 3 mercados ativos, copie a descrição de cada um e cole no ChatGPT pedindo a análise do framework acima. Avalie a qualidade da análise. Isso é o exercício de calibração da sua capacidade analítica.</p>
+      </div>
+
+      <div class="nav-btns">
+        <button class="btn-prev" onclick="go(4)">← Módulo 04</button>
+        <button class="btn-next" onclick="go(6)">Módulo 06: Escala →</button>
+      </div>
+    </div>
+
+    <!-- PAGE 6: MÓDULO 06 — ESCALA -->
+    <div class="page" id="p6">
+      <div class="mod-pill cyan">Módulo 06</div>
+      <h1>Escala — de <span class="g">R$ 500 a R$ 3.000+</span>/mês</h1>
+      <p class="intro">Você tem pelo menos uma fonte funcionando. Agora é sobre combinar, automatizar e construir ativos que pagam mesmo quando você não está trabalhando.</p>
+
+      <h2>A matemática dos R$ 3.000/mês</h2>
+
+      <div class="tw">
+        <table>
+          <tr><th>Fonte</th><th>Meta realista mês 2–3</th><th>Como chegar lá</th></tr>
+          <tr><td><strong>Vídeos com IA</strong></td><td>R$ 800–1.500</td><td>4–6 clientes recorrentes ou pacotes mensais</td></tr>
+          <tr><td><strong>Micro-SaaS</strong></td><td>R$ 500–2.000</td><td>20–40 assinantes pagando R$ 50–97/mês</td></tr>
+          <tr><td><strong>Agentes IA</strong></td><td>R$ 1.000–3.000</td><td>2–4 clientes com recorrência mensal</td></tr>
+          <tr><td><strong>Polymarket</strong></td><td>R$ 200–800</td><td>Posições em 5–8 mercados bem analisados</td></tr>
+        </table>
+      </div>
+
+      <p>Combinando <strong>apenas duas fontes</strong> você já chega em R$ 3.000/mês com consistência — sem depender da sorte de uma única estratégia.</p>
+
+      <h2>A pilha ideal para R$ 3.000+</h2>
+      <p>A combinação mais estável e escalável para iniciantes:</p>
+      <ul class="chk diamond">
+        <li><strong>Base recorrente:</strong> 1–2 clientes de Agente IA (R$ 1.000–2.000/mês garantidos)</li>
+        <li><strong>Crescimento:</strong> Micro-SaaS em validação — acumulando assinantes</li>
+        <li><strong>Ativo variável:</strong> Vídeos com IA por projeto (R$ 500–1.000/mês extra)</li>
+        <li><strong>Especulativo controlado:</strong> Polymarket com 5–10% do capital (retorno variável)</li>
+      </ul>
+
+      <h2>Como automatizar para ganhar mais sem trabalhar mais</h2>
+
+      <h3>Automatize a entrega de vídeos</h3>
+      <p>Configure um pipeline no Make: cliente envia briefing → prompt gerado automaticamente → vídeo enviado para revisão → fatura enviada automaticamente. Você só aprova, não mais executa manualmente cada etapa.</p>
+
+      <h3>Automatize o crescimento do SaaS</h3>
+      <p>Sequência de e-mails automática pós-cadastro, cobrança recorrente via Stripe, painel de métricas no Notion atualizado automaticamente. O produto roda sozinho.</p>
+
+      <h3>Automatize a prospecção de agentes</h3>
+      <p>Use IA para gerar mensagens de prospecção personalizadas em volume — você define o nicho, a IA escreve a abordagem e preenche com dados da empresa. Você só envia e responde.</p>
+
+      <h2>Construindo ativos duráveis</h2>
+      <p>A grande diferença entre renda extra e riqueza é o ativo. Renda extra para quando você para. Ativo continua gerando mesmo sem você.</p>
+      <ul class="chk">
+        <li>Micro-SaaS com 50+ assinantes = ativo que vale 12–24x o faturamento mensal</li>
+        <li>Base de clientes de agente IA com contratos anuais = previsibilidade de 12 meses</li>
+        <li>Portfólio de vídeos com IA + reputação = demanda inbound (clientes te procuram)</li>
+        <li>Histórico de análise no Polymarket = edge comprovado que cresce com o tempo</li>
+      </ul>
+
+      <div class="box box-tip">
+        <div class="bl">💡 Regra dos 6 meses</div>
+        <p>Nos primeiros 6 meses: todo lucro que entrar, reinvista 50% em melhorar as ferramentas, créditos das plataformas e marketing. O outro 50% é seu. Quem reinveste nos primeiros meses chega ao R$ 3.000 muito mais rápido.</p>
+      </div>
+
+      <div class="box box-act">
+        <div class="bl">✅ Ação Final do Método</div>
+        <p>Defina agora: qual das 4 fontes você vai executar <strong>primeiro</strong>? Qual vai ser a segunda? Escreva no celular: "Foco 1: [fonte]. Foco 2: [fonte]. Prazo para o primeiro resultado: [data]." Isso é o seu plano. Simples e acionável.</p>
+      </div>
+
+      <div class="nav-btns">
+        <button class="btn-prev" onclick="go(5)">← Módulo 05</button>
+        <button class="btn-next" onclick="go(7)">🎁 Bônus: Kit Early Adopter →</button>
+      </div>
+    </div>
+
+    <!-- PAGE 7: BÔNUS -->
+    <div class="page" id="p7">
+      <div class="mod-pill amber">🎁 Bônus Exclusivo</div>
+      <h1>Kit <span class="g">Early Adopter</span></h1>
+      <p class="intro amber">Tudo pronto para você sair daqui e agir hoje. Prompts, templates, lista de ferramentas e guia de análise.</p>
+
+      <h2>Bônus 1 — 10 Prompts para vídeos que vendem</h2>
+
+      <div class="prompt-box"><div class="pl">VÍDEO DE PRODUTO — E-COMMERCE</div>Professional product video of <em>[produto]</em> on <em>[superfície]</em>, white background, rotating 360 degrees slowly, studio lighting, clean and minimal, commercial quality, no watermark</div>
+
+      <div class="prompt-box"><div class="pl">GASTRONOMIA — RESTAURANTE</div>Cinematic food video, <em>[prato]</em> being plated by chef hands, steam rising, close-up macro shot, warm restaurant lighting, 4K quality, luxury dining aesthetic</div>
+
+      <div class="prompt-box"><div class="pl">FITNESS / ACADEMIA</div>Dynamic workout video, athletic <em>[homem/mulher]</em> performing <em>[exercício]</em>, professional gym setting, motivational energy, slow motion moments, sports brand commercial style</div>
+
+      <div class="prompt-box"><div class="pl">MODA / VESTUÁRIO</div>Fashion editorial video, model wearing <em>[descrição da roupa]</em>, <em>[ambiente]</em> background, golden hour lighting, editorial magazine quality, elegant movement</div>
+
+      <div class="prompt-box"><div class="pl">IMÓVEIS / REAL ESTATE</div>Real estate walkthrough video of <em>[tipo de imóvel]</em>, smooth drone-style camera movement, natural daylight, luxury interior, professional real estate photography aesthetic</div>
+
+      <div class="prompt-box"><div class="pl">TECNOLOGIA / APP</div>Tech product reveal video of <em>[produto]</em>, dark background with subtle light beams, floating and rotating slowly, futuristic aesthetic, Apple keynote presentation style</div>
+
+      <div class="prompt-box"><div class="pl">LIFESTYLE / WELLNESS</div>Lifestyle video of person enjoying <em>[atividade]</em>, golden hour, candid and authentic feeling, warm color grade, wellness and mindfulness aesthetic</div>
+
+      <div class="prompt-box"><div class="pl">B-ROLL NATUREZA / AMBIENTE</div>Cinematic nature B-roll, <em>[ambiente]</em>, camera slowly moving through the scene, epic landscape, National Geographic documentary quality, no people</div>
+
+      <div class="prompt-box"><div class="pl">ANIMAÇÃO DE LOGO / MARCA</div>Logo animation video, <em>[descrição do logo]</em> appearing with particle effects, premium brand reveal, dark background, elegant and minimal motion design</div>
+
+      <div class="prompt-box"><div class="pl">EVENTO / LANÇAMENTO</div>Event atmosphere video, <em>[tipo de evento]</em>, crowd energy, dynamic camera cuts, confetti and celebration, high production value, excitement and momentum</div>
+
+      <h2>Bônus 2 — 20 melhores nichos para Micro-SaaS de IA</h2>
+
+      <div class="tw">
+        <table>
+          <tr><th>#</th><th>Ferramenta</th><th>Público-alvo</th><th>Preço sugerido</th></tr>
+          <tr><td>1</td><td>Gerador de proposta comercial</td><td>Freelancers e agências</td><td>R$ 97/mês</td></tr>
+          <tr><td>2</td><td>Roteiro de vídeo para YouTube</td><td>Criadores de conteúdo</td><td>R$ 67/mês</td></tr>
+          <tr><td>3</td><td>Legendas e hashtags para Instagram</td><td>Social media managers</td><td>R$ 47/mês</td></tr>
+          <tr><td>4</td><td>E-mail marketing em massa personalizado</td><td>Empreendedores</td><td>R$ 127/mês</td></tr>
+          <tr><td>5</td><td>Descrição de produto para Shopee/ML</td><td>Vendedores de marketplace</td><td>R$ 57/mês</td></tr>
+          <tr><td>6</td><td>Gerador de contrato simples</td><td>MEIs e prestadores de serviço</td><td>R$ 77/mês</td></tr>
+          <tr><td>7</td><td>Análise de currículo com IA</td><td>RH de pequenas empresas</td><td>R$ 147/mês</td></tr>
+          <tr><td>8</td><td>Resumo de reunião em texto</td><td>Gestores e executivos</td><td>R$ 97/mês</td></tr>
+          <tr><td>9</td><td>Anúncio de Google Ads gerado por IA</td><td>Donos de negócio local</td><td>R$ 67/mês</td></tr>
+          <tr><td>10</td><td>Cardápio digital com descrição automática</td><td>Restaurantes e lanchonetes</td><td>R$ 57/mês</td></tr>
+          <tr><td>11</td><td>FAQ automático para site</td><td>E-commerces</td><td>R$ 47/mês</td></tr>
+          <tr><td>12</td><td>Relatório de desempenho de redes sociais</td><td>Agências de marketing</td><td>R$ 127/mês</td></tr>
+          <tr><td>13</td><td>Gerador de aula/slide educativo</td><td>Professores e coaches</td><td>R$ 77/mês</td></tr>
+          <tr><td>14</td><td>Copy para página de vendas</td><td>Infoprodutores</td><td>R$ 97/mês</td></tr>
+          <tr><td>15</td><td>Diagnóstico de SEO simplificado</td><td>Pequenos negócios com site</td><td>R$ 67/mês</td></tr>
+          <tr><td>16</td><td>Gerador de brief criativo</td><td>Agências e designers</td><td>R$ 57/mês</td></tr>
+          <tr><td>17</td><td>Análise de sentiment de reviews</td><td>E-commerce e varejo</td><td>R$ 97/mês</td></tr>
+          <tr><td>18</td><td>Transcrição + resumo de podcast</td><td>Podcasters</td><td>R$ 47/mês</td></tr>
+          <tr><td>19</td><td>Gerador de headline para anúncio</td><td>Gestores de tráfego</td><td>R$ 67/mês</td></tr>
+          <tr><td>20</td><td>Proposta de parceria comercial</td><td>Empresas B2B</td><td>R$ 127/mês</td></tr>
+        </table>
+      </div>
+
+      <h2>Bônus 3 — Template de proposta para fechar clientes de Agente IA</h2>
+
+      <div class="prompt-box amber">
+        <div class="pl">TEMPLATE DE PROPOSTA — AGENTE DE IA</div>
+        <strong>PROPOSTA: Implementação de Agente de IA</strong><br><br>
+        <strong>Para:</strong> <em>[Nome da empresa]</em><br>
+        <strong>Problema identificado:</strong> <em>[descreva o problema específico que você viu]</em><br><br>
+        <strong>Solução proposta:</strong><br>
+        Implementação de um agente de IA que <em>[o que o agente faz]</em>, eliminando a necessidade de <em>[o que atualmente é feito manualmente]</em> e economizando aproximadamente <em>[X horas/semana]</em> da equipe.<br><br>
+        <strong>O que está incluso:</strong><br>
+        • Configuração completa do agente em <em>[prazo]</em> dias úteis<br>
+        • Integração com <em>[WhatsApp/e-mail/sistema atual]</em><br>
+        • Treinamento da equipe (1 sessão de 60 min)<br>
+        • Suporte e ajustes por 30 dias<br>
+        • Relatório mensal de desempenho<br><br>
+        <strong>Investimento:</strong><br>
+        Setup: R$ <em>[valor]</em> (pagamento único)<br>
+        Manutenção mensal: R$ <em>[valor]</em>/mês<br><br>
+        <strong>Garantia:</strong> Se em 30 dias o agente não estiver funcionando conforme acordado, devolvo o investimento integral.<br><br>
+        Assinatura: _________________________ Data: _________
+      </div>
+
+      <h2>Bônus 4 — Guia rápido de análise no Polymarket</h2>
+
+      <div class="tw">
+        <table>
+          <tr><th>Sinal</th><th>O que significa</th><th>Ação</th></tr>
+          <tr><td>Preço de mercado muito abaixo da sua estimativa</td><td>Mercado subestimando o evento</td><td>Considere entrar em "Sim"</td></tr>
+          <tr><td>Preço de mercado muito acima da sua estimativa</td><td>Mercado superestimando o evento</td><td>Considere entrar em "Não"</td></tr>
+          <tr><td>Volume baixo no mercado</td><td>Pouca liquidez — difícil sair</td><td>Evite ou entre com valor mínimo</td></tr>
+          <tr><td>Evento próximo da resolução</td><td>Menos tempo para reversão</td><td>Risco menor, retorno menor</td></tr>
+          <tr><td>Confiança da análise IA &lt; 6/10</td><td>Muita incerteza</td><td>Não entre ou entre com mínimo</td></tr>
+        </table>
+      </div>
+
+      <div class="box box-act">
+        <div class="bl">🏁 Parabéns — você concluiu o Método IA Income!</div>
+        <p>Você tem agora o mapa completo das 4 oportunidades de IA com menor concorrência e maior potencial no Brasil hoje. O próximo passo é <strong>execução</strong> — sem isso, o melhor método do mundo não funciona. Volte ao módulo da sua fonte principal e comece a ação definida lá. Agora.</p>
+      </div>
+
+      <div class="nav-btns">
+        <button class="btn-prev" onclick="go(6)">← Módulo 06</button>
+        <button class="btn-next" onclick="go(0)">🏠 Voltar ao Início</button>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /layout -->
+
+<script>
+const titles=['Dashboard','Módulo 01 — A Janela Histórica','Módulo 02 — Vídeos com IA','Módulo 03 — Micro-SaaS com IA','Módulo 04 — Agentes de IA','Módulo 05 — Polymarket','Módulo 06 — Escala R$3k+','Bônus — Kit Early Adopter'];
+const metas=['Visão geral das 4 fontes de renda com IA','Por que 2025 é o momento exato para entrar','Seedance, Kling e Runway — venda vídeo profissional sem câmera','Ferramentas de IA sem código com assinatura recorrente','Automações inteligentes como serviço mensal','Mercado de previsões com análise potencializada por IA','Como combinar fontes e construir ativos duráveis','Prompts, templates e guia de análise prontos para usar'];
+let done=JSON.parse(localStorage.getItem('iai_done')||'[]');
+let cur=0;
+
+function go(n){
+  document.getElementById('p'+cur).classList.remove('active');
+  document.getElementById('ni'+cur).classList.remove('active');
+  cur=n;
+  document.getElementById('p'+cur).classList.add('active');
+  document.getElementById('ni'+cur).classList.add('active');
+  document.getElementById('tbt').textContent=titles[n];
+  document.getElementById('tbm').textContent=metas[n];
+  const bm=document.getElementById('bmk');
+  bm.style.display=n===0?'none':'block';
+  bm.textContent=done.includes(n)?'✓ Concluído':'✓ Marcar como lido';
+  bm.style.background=done.includes(n)?'#10b981':'var(--accent)';
+  window.scrollTo(0,0);
+  closeSB();
+}
+
+function markDone(){
+  if(!done.includes(cur)){done.push(cur);localStorage.setItem('iai_done',JSON.stringify(done));}
+  const bm=document.getElementById('bmk');
+  bm.textContent='✓ Concluído';bm.style.background='#10b981';
+  document.getElementById('ni'+cur).classList.add('done');
+  updateProg();
+}
+
+function updateProg(){
+  const p=Math.round((done.length/7)*100);
+  document.getElementById('fill').style.width=p+'%';
+  document.getElementById('pct').textContent=p+'%';
+}
+
+function toggleSB(){
+  document.getElementById('sb').classList.toggle('open');
+  document.getElementById('ov').classList.toggle('open');
+}
+function closeSB(){
+  document.getElementById('sb').classList.remove('open');
+  document.getElementById('ov').classList.remove('open');
+}
+
+done.forEach(n=>{if(document.getElementById('ni'+n))document.getElementById('ni'+n).classList.add('done');});
+updateProg();
+</script>
+</body>
+</html>
